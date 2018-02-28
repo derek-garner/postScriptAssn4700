@@ -1,0 +1,39 @@
+% Be sure to DOCUMENT the operator especially inputs
+% and outputs.
+/hypotrochoid {
+    /counter 0 def  %counter for loop
+    /r exch def     %r is the number of times around
+    /d exch def     %d is the length of the arm
+    /b exch def     %b is the radius of the radius of the small circle
+    /a exch def     % a is the radius of the big circle 
+
+    currentpoint    %place current coordinates and place on stack
+    /y exch def     %define y coordinate
+    /x exch def     %define x coordinate
+    
+
+
+
+    /t 0 def        %initialize t which is the iterator for the equations
+    
+    0 1 r {         
+        a b sub t cos mul a b sub t mul b div cos d mul add     %x(t) = ((a - b) * cos(t)) + (d * cos( ((a-b) * t)/b ))
+        75 add                                                  %adjust position
+        a b sub t sin mul a b sub t mul b div sin d mul sub     %y(t) = ((a - b) * sin(t)) - (d * sin( ((a-b) * t)/b ))
+       50 add                                                    %adjust position
+        
+        
+        moveto                                                  % move to caluclated x,y from above
+        0 .1 360{
+        pop                                                     %pop counter
+        /t t .1 add def                                         %increment t by .1 degrees
+        a b sub t cos mul a b sub t mul b div cos d mul add      %x(t) = ((a - b) * cos(t)) + (d * cos( ((a-b) * t)/b ))
+        75 add
+        a b sub t sin mul a b sub t mul b div sin d mul sub      %y(t) = ((a - b) * sin(t)) - (d * sin( ((a-b) * t)/b ))
+        50 add
+        lineto
+        }for
+        /t t 1 add def
+   }for
+    50 100 translate 
+} def

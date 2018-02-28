@@ -1,0 +1,35 @@
+% Be sure to DOCUMENT the operator especially inputs
+% and outputs.
+/sort {
+  /size count def            %First get size of the string to be sorted.
+  /size size 2 sub def       %Subtract to account for operand on stack which does isn't to be sorted
+  /innerCounter 0 def        %Initialize innerCounter
+  /outerCounter 0 def        %Initialize outterCounter
+  /outterLoop 0 def          %Tracks current iteration of outter loop for shift operation
+
+  count 1 gt{
+    outerCounter 1 size{     %Start of outterLoop 
+      pop                    %take counter off the stack
+      /temp exch def         %define temp as top value on stack
+      innerCounter 1 size{   %start of innerLoop 
+        pop                  %Take counter of stack
+                              
+        dup temp lt           %check temp value to compare with adjacent value
+                              %if less than, perform swap
+          {temp
+          count outterLoop sub  1  roll
+          /temp exch def
+          }
+
+          {                   %Else roll back into stack
+            count outterLoop sub 1  roll
+          }
+        ifelse
+     
+      }for
+      temp                    %Place current temp value back on stack for next round of compares
+      count outterLoop sub 1  roll  %roll temp value to current back of stack
+      /outterLoop outterLoop 1 add def 
+    }for
+  }if
+} def

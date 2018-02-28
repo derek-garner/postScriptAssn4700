@@ -1,0 +1,84 @@
+% Be sure to DOCUMENT the operator especially inputs
+% and outputs.
+/spiral {
+  /counter 0 def          %define counter for loop
+  /numSpirals exch def    %store the number of numSpirals
+  /angle exch def         %store angle deviation
+  /width exch def         %store width of ovals
+  /radius exch def        %store radius of ovals
+  /y exch def             %story y coordinate
+  /x exch def             %store x coordinates
+  /currColor 0 def        %current color indicated with 0, 1 ,2 
+                          
+  
+  counter 1 numSpirals{
+    pop                   %take counter off stack 
+    angle rotate          %rotate by defined angle
+    x y radius width      %place x,y,radius and width on stack
+    currColor 0 eq{       %Set color based on value for currColor
+      1 0 0 setrgbcolor
+    }if
+    currColor 1 eq{
+      0 1 0 setrgbcolor
+    }if
+    currColor 2 eq{
+      0 0 1 setrgbcolor
+      /currColor -1 def
+    }if                   %Done setting color
+    oval                  %Draw the oval
+    /currColor currColor 1 add def  %increment color counter
+  }for
+} def
+
+% The operator draws a figure eight at the coordinates 0, 0
+% It takes as input
+%   radius - the radius (length) of the figure 8
+%   width - the width of the figure 8
+/figureEight {
+  2 dict begin
+    /width exch def   % width
+    /radius exch def   % radius
+
+    % Start a path for the object
+    newpath
+
+    % Move to the center
+    0 0 moveto 
+
+    % Draw one loop using a Bezier curve
+    0 0 radius width radius width -1 mul 0 0 curveto 
+
+    % Draw the other side of the loop using a Bezier curve
+    0 0 radius -1 mul width radius -1 mul width -1 mul 0 0 curveto 
+    closepath 
+
+    % Draw it
+    stroke
+  end    
+} def
+
+% The oval operator draws an oval centered at the coordinates 0, 0
+% It takes as input
+%   radius - radius (length) of the oval
+%   width - width of the oval
+/oval {
+  2 dict begin
+    /width exch def   % width
+    /radius exch def   % radius
+
+    % Move to the start of half of the oval
+    0 width moveto 
+
+    % Draw half the oval
+    0 width radius width radius width -1 mul 0 width -1 mul curveto 
+    
+    % Move to the other side of the oval
+    0 width moveto 
+
+    % Draw the other half 
+    0 width radius -1 mul width radius -1 mul width -1 mul 0 width -1 mul curveto 
+   
+    % Actually, now draw it
+    stroke
+  end    
+} def

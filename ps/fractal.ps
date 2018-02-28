@@ -1,0 +1,102 @@
+% Be sure to DOCUMENT the operator especially inputs
+% and outputs.
+
+/fractal { 
+    25 100 translate    %position adjustments
+    gsave               %save canvas for next operation
+    0 0 moveto
+    6 6 scale
+    fractalR            %perform Fractal's recursive operation
+    grestore
+} def
+
+
+/fractalR { 
+     dup 0 eq{          %draw nothing if depth set to 1
+       %Do Nothing
+   }if
+    dup 1 gt{           %draw first level
+      1 1 drawTriangle
+   }if
+    dup 2 eq{           %draw second level
+        drawLeftTriangle
+        drawRightTriangle
+        dup 1 sub fractalR
+   }if
+   dup 2 gt{                 %handle above 2 levels recursively, shifting left and right then reseting
+        shiftRight
+        dup 1 sub fractalR   %Right side recursion
+        shiftRightBack
+        shiftLeft
+        pstack
+        dup 1 sub fractalR  %Left side recursion
+        shiftLeftBack
+   }if
+   pop
+   
+} def
+
+% a b c d dragTriangle a= xscale  b= yscale  c=xpos d=ypos
+/drawTriangle{
+    .5 setlinewidth
+    scale
+    120 rotate
+    -10 0 rlineto           %construct right line segment
+   -120 rotate
+    -10 0 rlineto           %construct bottrom line segment
+    closepath               %complete triangle
+    gsave                %save the graphics state
+    stroke               %stroke the constructed triangle
+    grestore             %restore the graphics state
+    fill
+
+}def
+
+
+%Draws left triangle of next level and resets coordinates
+/drawLeftTriangle{
+   shiftLeft
+   1 1  drawTriangle
+    shiftLeftBack
+     0 0 moveto
+}def
+
+%shift left for left triangle draw
+/shiftLeft{
+    .5 .5 scale
+   -10.6 -18 translate 
+    0 0 moveto
+    -15 rotate
+}def
+
+%restores canvase after left triangle draw
+/shiftLeftBack{
+   
+   15 rotate
+    10.6 18 translate
+    0 0 moveto
+     2 2 scale
+}def
+
+%shift right for right triangle draw
+/shiftRight{
+    .5 .5 scale
+   10.6 -18 translate 
+    0 0 moveto
+    15 rotate
+}def
+
+%restores canvase after right triangle draw
+/shiftRightBack{
+    -15 rotate
+    -10.6 18 translate
+    0 0 moveto
+    2 2 scale
+}def
+
+%Draws Right triangle of next level and resets coordinates
+/drawRightTriangle{
+  shiftRight
+   1 1  drawTriangle
+    shiftRightBack
+}def
